@@ -1,4 +1,4 @@
-// import { Contract } from '@algorandfoundation/algorand-typescript'
+import { Contract, GlobalState, uint64 } from "@algorandfoundation/algorand-typescript";
 
 // export class HelloWorld extends Contract {
 //   hello(name: string): string {
@@ -6,24 +6,28 @@
 //   }
 // }
 
-import { Contract } from "@algorandfoundation/tealscript";
-
 export class Voting extends Contract {
-  proposal = this.globalState.string({ key: "proposal", default: "" });
-  votes = this.globalState.uint64({ key: "votes", default: 0n });
+  // Store the current proposal
+  proposal = GlobalState<string>({ key: "proposal", initialValue: "" });
 
+  // Store vote count as a number
+  votes = GlobalState<uint64>({ key: "votes", initialValue: 0 });
+
+  // Function to create a proposal
   createProposal(title: string): string {
     this.proposal.value = title;
-    this.votes.value = 0n;
+    this.votes.value = 0; // reset votes when new proposal is made
     return this.proposal.value;
   }
 
-  castVote(): bigint {
-    this.votes.value += 1n;
+  // Function to cast a vote
+  castVote(): uint64 {
+    this.votes.value = this.votes.value + 1;
     return this.votes.value;
   }
 
-  getResult(): string {
-    return `Proposal: ${this.proposal.value}, Votes: ${this.votes.value}`;
+  // Function to check results
+  getResult(): [string, uint64] {
+    return [this.proposal.value, this.votes.value];
   }
 }
