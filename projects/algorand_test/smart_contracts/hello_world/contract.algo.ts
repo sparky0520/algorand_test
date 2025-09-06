@@ -1,11 +1,5 @@
 import { Contract, GlobalState, uint64 } from "@algorandfoundation/algorand-typescript";
 
-// export class HelloWorld extends Contract {
-//   hello(name: string): string {
-//     return `Hello, ${name}`
-//   }
-// }
-
 export class Voting extends Contract {
   // Store the current proposal
   proposal = GlobalState<string>({ key: "proposal", initialValue: "" });
